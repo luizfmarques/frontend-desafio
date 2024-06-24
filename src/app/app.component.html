@@ -1,5 +1,6 @@
 <div class="container">
   <div class="card m-4">
+    <button class="btn btn-primary" (click)="novoPedido()">Novo Pedido</button>
     <h5 class="card-title p-4">Lista de Pedidos</h5>
     <div class="card-body">
       <!-- app.component.html -->
@@ -13,18 +14,23 @@
                 <th>Cnpj/Cpf</th>
                 <th>Data</th>
                 <th>Valor</th>
-                <th>Carregar</th>
+                <th>Imposto</th>
+                <th>Valor Total</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              @for (item of listaPedidos; track $index) {
+              @for (pedido of listaPedidos; track $index) {
               <tr>
-                <td>{{ item.id }}</td>
-                <td>{{ item.clientName }}</td>
-                <td>{{ item.cnpjOuCpf }}</td>
-                <td>{{ item.dataCompra }}</td>
-                <td>{{ item.valorTotal }}</td>
-                <td><button class="btn btn-primary">Carregar</button></td>
+                <td>{{ pedido.id }}</td>
+                <td>{{ pedido.clientName }}</td>
+                <td>{{ pedido.cnpjOuCpf }}</td>
+                <td>{{ pedido.dataStr }}</td>
+                <td>{{ pedido.valorItens.toFixed(2) }}</td>
+                <td>{{ pedido.imposto.toFixed(2) }}</td>
+                <td>{{ pedido.valorTotal.toFixed(2) }}</td>
+                <button (click)="carregarItens(pedido.id)" class="btn btn-primary">Carregar</button>
+                <button (click)="deletarPedido(pedido.id)" class="btn btn-danger">Deletar</button>
               </tr>
               }
             </tbody>
@@ -34,3 +40,113 @@
     </div>
   </div>
 </div>
+
+
+@if(exibirModal){
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="fecharModal()">&times;</span>
+    <h2>Detalhes do Pedido</h2>
+    <div class="card-body">
+      <!-- app.component.html -->
+      <div class="">
+        <div>
+          @if(formulario){
+          <form [formGroup]="formulario">
+            <div class="row">
+              <div class="col-12">
+                <label for="">Tipo Cliente</label>
+                <div class="form-check">
+                  <input value="CPF" formControlName="tipo" class="form-check-input" type="radio" name="tipo"
+                    id="tipoCPF">
+                  <label class="form-check-label" for="tipoCPF">
+                    CPF
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input value="CNPJ" formControlName="tipo" class="form-check-input" type="radio" name="tipo"
+                    id="tipoCNPJ" checked>
+                  <label class="form-check-label" for="tipoCNPJ">
+                    CNPJ
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label for="clientName">Cliente</label>
+                <input formControlName="clientName" id="clientName" type="text" class="form-control">
+              </div>
+              <div class="col-6">
+                <label for="cpfOuCnpj">CPF/CNPJ</label>
+                <input formControlName="cnpjOuCpf" id="cnpjOuCpf" type="text" class="form-control">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-3">
+                <label for="dataCompra">Data da Compra</label>
+                <input formControlName="dataCompra" id="dataCompra" type="date" class="form-control">
+              </div>
+              <div class="col-3">
+                <label for="valorItens">Valor Itens</label>
+                <input formControlName="valorItens" id="valorItens" type="number" class="form-control">
+              </div>
+              <div class="col-3">
+                <label for="imposto">Imposto</label>
+                <input formControlName="imposto" id="imposto" type="number" class="form-control">
+              </div>
+              <div class="col-3">
+                <label for="valorTotal">Valor Total</label>
+                <input formControlName="valorTotal" id="valorTotal" type="number" class="form-control">
+              </div>
+            </div>
+          </form>
+          }
+          <hr>
+          <button class="btn btn-primary" (click)="novoItem()">Novo Item</button>
+          @if(formularioItem){
+          <form [formGroup]="formularioItem">
+            <div class="row">
+              <div class="col-6">
+                <label for="descricaoItem">Descrição</label>
+                <input formControlName="descricao" id="descricaoItem" type="text" class="form-control">
+              </div>
+              <div class="col-3">
+                <label for="quantidadeItem">Quantidade</label>
+                <input formControlName="quantidade" id="quantidadeItem" type="number" class="form-control">
+              </div>
+              <div class="col-3">
+                <label for="valorItem">Valor Itens</label>
+                <input formControlName="valor" id="valorItem" type="number" class="form-control">
+              </div>
+            </div>
+          </form>
+          <button class="btn btn-primary" (click)="salvarItem()">Salvar Item</button>
+          }
+          <div class="table-container">
+            <table class="styled-table">
+              <thead>
+                <tr>
+                  <th>Itens</th>
+                  <th>Quantidade</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of listaItens; track $index) {
+                <tr>
+                  <td>{{ item.descricao }}</td>
+                  <td>{{ item.quantidade }}</td>
+                  <td>{{ item.valor }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+            <button class="btn btn-primary" (click)="salvarPedido()">Salvar Pedido</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

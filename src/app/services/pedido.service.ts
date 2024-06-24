@@ -14,13 +14,21 @@ export class PedidoService {
     console.log(this.apiUrl);
     return this.http.get<Array<Pedido>>(this.apiUrl);
   }
-  postData(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, data);
+
+  findById(id: number): Observable<Pedido> {
+    console.log(this.apiUrl);
+    return this.http.get<Pedido>(`${this.apiUrl}/${id}`);
   }
-  updateData(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, data);
-  }
+
   deleteData(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  calcularImposto(pedido: Pedido){
+    return this.http.post<Pedido>(`${this.apiUrl}/calcular-imposto`, pedido);
+  } 
+
+  salvarPedido(pedido: Pedido){
+    return this.http.post<Pedido>(`${this.apiUrl}`, pedido);
+  } 
 }
